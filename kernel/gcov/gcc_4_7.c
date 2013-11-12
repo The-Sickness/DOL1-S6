@@ -18,6 +18,7 @@
 #include <linux/vmalloc.h>
 #include "gcov.h"
 
+<<<<<<< HEAD
 #if __GNUC__ == 5 && __GNUC_MINOR__ >= 1
 #define GCOV_COUNTERS			10
 #elif __GNUC__ == 4 && __GNUC_MINOR__ >= 9
@@ -26,6 +27,9 @@
 #define GCOV_COUNTERS			8
 #endif
 
+=======
+#define GCOV_COUNTERS			8
+>>>>>>> 93758f1... gcov: add support for gcc 4.7 gcov format
 #define GCOV_TAG_FUNCTION_LENGTH	3
 
 static struct gcov_info *gcov_info_head;
