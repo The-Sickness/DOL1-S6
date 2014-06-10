@@ -86,12 +86,16 @@ void __gcov_merge_ior(gcov_type *counters, unsigned int n_counters)
 EXPORT_SYMBOL(__gcov_merge_ior);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9908df7... gcov: add support for GCC 4.9
 void __gcov_merge_time_profile(gcov_type *counters, unsigned int n_counters)
 {
 	/* Unused. */
 }
 EXPORT_SYMBOL(__gcov_merge_time_profile);
 
+<<<<<<< HEAD
 void __gcov_merge_icall_topn(gcov_type *counters, unsigned int n_counters)
 {
 	/* Unused. */
@@ -100,6 +104,8 @@ EXPORT_SYMBOL(__gcov_merge_icall_topn);
 
 =======
 >>>>>>> 93758f1... gcov: add support for gcc 4.7 gcov format
+=======
+>>>>>>> 9908df7... gcov: add support for GCC 4.9
 /**
  * gcov_enable_events - enable event reporting through gcov_event()
  *
