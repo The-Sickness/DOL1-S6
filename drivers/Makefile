@@ -184,3 +184,4 @@ obj-$(CONFIG_ICE5_FPGA_LED_MATRIX)	+= ledmatrix/
 # SecFilter Driver
 obj-$(CONFIG_SEC_NET_FILTER)	+= secfilter/
 
+obj-$(CONFIG_ANDROID)		+= android/

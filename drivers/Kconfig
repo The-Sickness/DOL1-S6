@@ -204,4 +204,7 @@ source "drivers/ledmatrix/Kconfig"
 source "drivers/secfilter/Kconfig"
 
 source "drivers/soc/Kconfig"
+
+source "drivers/android/Kconfig"
+
 endmenu
