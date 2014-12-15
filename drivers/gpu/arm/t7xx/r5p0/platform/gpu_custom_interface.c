@@ -18,6 +18,8 @@
 #include <mali_kbase.h>
 
 #include <linux/fb.h>
+#include <linux/ipa.h>
+#include <linux/sysfs_helpers.h>
 
 #include "mali_kbase_platform.h"
 #include "gpu_dvfs_handler.h"
@@ -29,6 +31,14 @@
 #include "gpu_custom_interface.h"
 #include <mach/apm-exynos.h>
 #include <mach/asv-exynos.h>
+
+#ifdef CONFIG_SOC_EXYNOS7420
+#define GPU_MAX_VOLT		925000
+#define GPU_MIN_VOLT		500000
+#define GPU_VOLT_STEP		6250
+#else
+#error "Please define gpu voltage ranges for current SoC."
+#endif
 
 extern struct kbase_device *pkbdev;
 
@@ -220,7 +230,10 @@ static ssize_t show_asv_table(struct device *dev, struct device_attribute *attr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 5eef6c5... gpu: arm: Add Exynos Mali voltage control
 
 static ssize_t show_volt_table(struct device *dev, struct device_attribute *attr, char *buf)
 {
@@ -284,13 +297,19 @@ static ssize_t set_volt_table(struct device *dev, struct device_attribute *attr,
 		}
 	}
 
+<<<<<<< HEAD
 	ipa_update();
+=======
+>>>>>>> 5eef6c5... gpu: arm: Add Exynos Mali voltage control
 	spin_unlock_irqrestore(&platform->gpu_dvfs_spinlock, flags);
 
 	return count;
 }
 
+<<<<<<< HEAD
 >>>>>>> 0374600... thermal: IPA: update power tables on actor voltage change
+=======
+>>>>>>> 5eef6c5... gpu: arm: Add Exynos Mali voltage control
 static int gpu_get_dvfs_table(struct exynos_context *platform, char *buf, size_t buf_size)
 {
 	int i, cnt = 0;
@@ -1709,6 +1728,7 @@ DEVICE_ATTR(clock, S_IRUGO|S_IWUSR, show_clock, set_clock);
 DEVICE_ATTR(vol, S_IRUGO, show_vol, NULL);
 DEVICE_ATTR(power_state, S_IRUGO, show_power_state, NULL);
 DEVICE_ATTR(asv_table, S_IRUGO, show_asv_table, NULL);
+DEVICE_ATTR(volt_table, S_IRUGO|S_IWUSR, show_volt_table, set_volt_table);
 DEVICE_ATTR(dvfs_table, S_IRUGO, show_dvfs_table, NULL);
 DEVICE_ATTR(time_in_state, S_IRUGO|S_IWUSR, show_time_in_state, set_time_in_state);
 DEVICE_ATTR(utilization, S_IRUGO, show_utilization, NULL);
@@ -1772,6 +1792,11 @@ int gpu_create_sysfs_file(struct device *dev)
 
 	if (device_create_file(dev, &dev_attr_asv_table)) {
 		GPU_LOG(DVFS_ERROR, DUMMY, 0u, 0u, "couldn't create sysfs file [asv_table]\n");
+		goto out;
+	}
+
+	if (device_create_file(dev, &dev_attr_volt_table)) {
+		GPU_LOG(DVFS_ERROR, DUMMY, 0u, 0u, "couldn't create sysfs file [volt_table]\n");
 		goto out;
 	}
 
@@ -1956,6 +1981,7 @@ void gpu_remove_sysfs_file(struct device *dev)
 	device_remove_file(dev, &dev_attr_vol);
 	device_remove_file(dev, &dev_attr_power_state);
 	device_remove_file(dev, &dev_attr_asv_table);
+	device_remove_file(dev, &dev_attr_volt_table);
 	device_remove_file(dev, &dev_attr_dvfs_table);
 	device_remove_file(dev, &dev_attr_time_in_state);
 	device_remove_file(dev, &dev_attr_utilization);
