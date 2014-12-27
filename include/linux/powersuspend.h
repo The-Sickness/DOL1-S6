@@ -41,7 +41,10 @@ void unregister_power_suspend(struct power_suspend *handler);
 void set_power_suspend_state_autosleep_hook(int new_state);
 void set_power_suspend_state_panel_hook(int new_state);
 
+<<<<<<< HEAD
 extern bool power_suspended;
 
+=======
+>>>>>>> d66be0d... kernel/power/powersuspend: new PM kernel driver for Android w/o early_suspend v1.5 (faux123/Yank555.lu)
 #endif
 
