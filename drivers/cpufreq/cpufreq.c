@@ -34,6 +34,35 @@
 
 #include <trace/events/power.h>
 
+<<<<<<< HEAD
+=======
+unsigned int GLOBALKT_MIN_FREQ_LIMIT[] = { 400000, 400000, 400000, 400000, 800000, 800000, 800000, 800000 };
+unsigned int GLOBALKT_MAX_FREQ_LIMIT[] = { 1500000, 1500000, 1500000, 1500000, 2100000, 2100000, 2100000, 2100000 };
+unsigned int CPUINFO_MIN_FREQ_LIMIT[] = { 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000 };
+unsigned int CPUINFO_MAX_FREQ_LIMIT[] = { 1600000, 1600000, 1600000, 1600000, 2304000, 2304000, 2304000, 2304000 };
+unsigned int main_cpufreq_control[8];
+unsigned int vfreq_lock = 0;
+static bool vfreq_lock_tempOFF = false;
+static unsigned int Lscreen_off_scaling_enable = 0;
+static unsigned int Lscreen_off_scaling_mhz_cl0 = 1500000;
+static unsigned int Lscreen_off_scaling_mhz_orig_cl0 = 1500000;
+static unsigned int Lscreen_off_scaling_mhz_cl1 = 2100000;
+static unsigned int Lscreen_off_scaling_mhz_orig_cl1 = 2100000;
+
+struct hotplug_data {
+	struct work_struct hotplug_work;
+	unsigned int work_speed_min;
+	unsigned int work_speed_max;
+	unsigned int work_speed_core_start;
+	unsigned int work_speed_core_stop;
+	unsigned int work_screen_going_off;
+};
+static struct hotplug_data *hotplug_data_cl0;
+static struct hotplug_data *hotplug_data_cl1;
+
+static struct workqueue_struct *dbs_wq;
+
+>>>>>>> 7df0a5f... cpufreq: set CPUINFO_MAX_FREQ_LIMIT to 2304 MHz
 /**
  * The "cpufreq driver" - the arch- or hardware-dependent low
  * level driver of CPUFreq support, and its spinlock. This lock
