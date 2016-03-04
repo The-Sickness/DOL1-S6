@@ -1452,6 +1452,11 @@ restart:
 				}
 				spin_unlock(&state->state_lock);
 				nfs4_put_open_state(state);
+<<<<<<< HEAD
+=======
+				clear_bit(NFS_STATE_RECLAIM_NOGRACE,
+					&state->flags);
+>>>>>>> 72f6eb8... Linux 3.10.99
 				spin_lock(&sp->so_lock);
 				goto restart;
 			}

@@ -1467,7 +1467,7 @@ static void unix_detach_fds(struct scm_cookie *scm, struct sk_buff *skb)
 	UNIXCB(skb).fp = NULL;
 
 	for (i = scm->fp->count-1; i >= 0; i--)
-		unix_notinflight(scm->fp->fp[i]);
+		unix_notinflight(scm->fp->user, scm->fp->fp[i]);
 }
 
 static void unix_destruct_scm(struct sk_buff *skb)
@@ -1513,10 +1513,15 @@ static int unix_attach_fds(struct scm_cookie *scm, struct sk_buff *skb)
 	if (!UNIXCB(skb).fp)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	if (unix_sock_count) {
 		for (i = scm->fp->count - 1; i >= 0; i--)
 			unix_inflight(scm->fp->fp[i]);
 	}
+=======
+	for (i = scm->fp->count - 1; i >= 0; i--)
+		unix_inflight(scm->fp->user, scm->fp->fp[i]);
+>>>>>>> 72f6eb8... Linux 3.10.99
 	return max_level;
 }
 

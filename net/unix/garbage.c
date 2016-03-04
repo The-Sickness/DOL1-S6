@@ -122,7 +122,7 @@ struct sock *unix_get_socket(struct file *filp)
  *	descriptor if it is for an AF_UNIX socket.
  */
 
-void unix_inflight(struct file *fp)
+void unix_inflight(struct user_struct *user, struct file *fp)
 {
 	struct sock *s = unix_get_socket(fp);
 	if (s) {
@@ -137,9 +137,14 @@ void unix_inflight(struct file *fp)
 		unix_tot_inflight++;
 		spin_unlock(&unix_gc_lock);
 	}
+<<<<<<< HEAD
+=======
+	user->unix_inflight++;
+	spin_unlock(&unix_gc_lock);
+>>>>>>> 72f6eb8... Linux 3.10.99
 }
 
-void unix_notinflight(struct file *fp)
+void unix_notinflight(struct user_struct *user, struct file *fp)
 {
 	struct sock *s = unix_get_socket(fp);
 	if (s) {
@@ -151,6 +156,11 @@ void unix_notinflight(struct file *fp)
 		unix_tot_inflight--;
 		spin_unlock(&unix_gc_lock);
 	}
+<<<<<<< HEAD
+=======
+	user->unix_inflight--;
+	spin_unlock(&unix_gc_lock);
+>>>>>>> 72f6eb8... Linux 3.10.99
 }
 
 static void scan_inflight(struct sock *x, void (*func)(struct unix_sock *),
