@@ -34,8 +34,6 @@
 
 #include <trace/events/power.h>
 
-<<<<<<< HEAD
-=======
 unsigned int GLOBALKT_MIN_FREQ_LIMIT[] = { 400000, 400000, 400000, 400000, 800000, 800000, 800000, 800000 };
 unsigned int GLOBALKT_MAX_FREQ_LIMIT[] = { 1500000, 1500000, 1500000, 1500000, 2100000, 2100000, 2100000, 2100000 };
 unsigned int CPUINFO_MIN_FREQ_LIMIT[] = { 200000, 200000, 200000, 200000, 200000, 200000, 200000, 200000 };
@@ -62,7 +60,6 @@ static struct hotplug_data *hotplug_data_cl1;
 
 static struct workqueue_struct *dbs_wq;
 
->>>>>>> 7df0a5f... cpufreq: set CPUINFO_MAX_FREQ_LIMIT to 2304 MHz
 /**
  * The "cpufreq driver" - the arch- or hardware-dependent low
  * level driver of CPUFreq support, and its spinlock. This lock
