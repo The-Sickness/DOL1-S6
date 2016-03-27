@@ -16,6 +16,7 @@
 #include <linux/slab.h>
 #include <linux/cpufreq.h>
 #include <linux/clk-private.h>
+#include <linux/clocker.h>
 
 #include <mach/map.h>
 #include <mach/regs-clock.h>
@@ -299,10 +300,11 @@ static void __init set_volt_table_CA53(void)
 	case 5 :
 		max_support_idx_CA53 = L8; break;	/* 1.2GHz */
 	default :
-		max_support_idx_CA53 = L5;	/* 1.5GHz */
+		max_support_idx_CA53 = L4;	/* 1.6GHz */
 	}
 
-	min_support_idx_CA53 = L16;	/* 400MHz */
+	min_support_idx_CA53 = EXYNOS7420_CPU_MIN_FREQ_LITTLE;
+
 	pr_info("CPUFREQ of CA53 max_freq : L%d %u khz\n", max_support_idx_CA53,
 		exynos7420_freq_table_CA53[max_support_idx_CA53].frequency);
 	pr_info("CPUFREQ of CA53 min_freq : L%d %u khz\n", min_support_idx_CA53,
@@ -367,9 +369,16 @@ int __init exynos_cpufreq_cluster0_init(struct exynos_dvfs_info *info)
 	info->max_support_idx = max_support_idx_CA53;
 	info->min_support_idx = min_support_idx_CA53;
 	info->boost_freq = exynos7420_freq_table_CA53[L10].frequency;
-	/* booting frequency is 1.4GHz */
-	info->boot_cpu_min_qos = exynos7420_freq_table_CA53[L6].frequency;
-	info->boot_cpu_max_qos = exynos7420_freq_table_CA53[L6].frequency;
+	/* booting frequency */
+        #ifdef EXYNOS7420_CPU_OVERCLOCK
+               /* booting frequency is 1.5GHz */
+	       info->boot_cpu_min_qos = exynos7420_freq_table_CA53[L6].frequency;
+	       info->boot_cpu_max_qos = exynos7420_freq_table_CA53[L6].frequency;
+        #else
+                /* booting frequency is 1.4GHz */
+		info->boot_cpu_min_qos = exynos7420_freq_table_CA53[L6].frequency;
+		info->boot_cpu_max_qos = exynos7420_freq_table_CA53[L6].frequency;
+	#endif
 #if defined(CONFIG_PMU_COREMEM_RATIO)
 	info->region_bus_table = exynos7420_region_bus_table_CA53;
 #else
