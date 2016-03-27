@@ -73,7 +73,7 @@ echo
 
 echo -n "Compiling Kernel .................................."
 cp $DC/$FIT .config
-xterm -e make ARCH=arm64 -j4
+xterm -e make ARCH=arm64 -j15
 if [ -f "arch/arm64/boot/Image" ]; then
 	echo "Done"
 	# Copy the compiled image to the build_kernel directory
@@ -141,7 +141,7 @@ echo "Done"
 ###################################### OPTIONAL SOURCE CLEAN ###################################
 
 echo
-cd ../ksource
+cd ../DOL1-S6
 read -p "Do you want to Clean the source? (y/n) > " mc
 if [ "$mc" = "Y" -o "$mc" = "y" ]; then
 	xterm -e make clean
@@ -150,7 +150,7 @@ fi
 
 ############################################# CLEANUP ##########################################
 
-cd ../ksource/$BK
+cd ../DOL1-S6/$BK
 rm -rf ramdisk.cpio.gz
 rm -rf Image*
 rm -rf boot*.img

@@ -422,17 +422,16 @@ config DISABLE_SAVE_CAPACITY_MAX
 	  capacity_max is restored after boot up
 	  You can find the code in healthd
 
-<<<<<<< HEAD
 config FIX_CHG_FQ_4MHZ
 	bool "fix charging frequency 4MHz"
 	default n
 	depends on CHARGER_MAX77843
 	help
 	  Say Y to fix charging frequency 4MHz
-=======
+
 config STORE_MODE
        bool "enable store mode"
        default n
        help
 	 Say Y to enable CONFIG_STORE_MODE
->>>>>>> 660568e... Unification: Unify F/I/T/W8/K/L/S and Flat/Edge models
+
