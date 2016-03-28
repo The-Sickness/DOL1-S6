@@ -229,11 +229,6 @@ static ssize_t show_asv_table(struct device *dev, struct device_attribute *attr,
 	return ret;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 5eef6c5... gpu: arm: Add Exynos Mali voltage control
 
 static ssize_t show_volt_table(struct device *dev, struct device_attribute *attr, char *buf)
 {
@@ -297,19 +292,12 @@ static ssize_t set_volt_table(struct device *dev, struct device_attribute *attr,
 		}
 	}
 
-<<<<<<< HEAD
 	ipa_update();
-=======
->>>>>>> 5eef6c5... gpu: arm: Add Exynos Mali voltage control
 	spin_unlock_irqrestore(&platform->gpu_dvfs_spinlock, flags);
 
 	return count;
 }
 
-<<<<<<< HEAD
->>>>>>> 0374600... thermal: IPA: update power tables on actor voltage change
-=======
->>>>>>> 5eef6c5... gpu: arm: Add Exynos Mali voltage control
 static int gpu_get_dvfs_table(struct exynos_context *platform, char *buf, size_t buf_size)
 {
 	int i, cnt = 0;
