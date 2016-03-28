@@ -1265,7 +1265,7 @@ static int cpufreq_add_dev(struct device *dev, struct subsys_interface *sif)
 		goto err_free_cpumask;
 
 	policy->cpu = cpu;
-	policy->governor = CPUFREQ_DEFAULT_GOVERNOR;
+        policy->governor = CPUFREQ_DEFAULT_GOVERNOR;
 	cpumask_copy(policy->cpus, cpumask_of(cpu));
 
 	/* Initially set CPU itself as the policy_cpu */
