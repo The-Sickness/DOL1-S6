@@ -163,7 +163,6 @@ choice
 	config DEFAULT_SIOPLUS
 		bool "SIOPLUS" if IOSCHED_SIOPLUS=y
 
-<<<<<<< HEAD
 	config DEFAULT_SIO
 		bool "SIO" if IOSCHED_SIO=y
 
@@ -174,13 +173,8 @@ choice
 		bool "ZEN" if IOSCHED_ZEN=y
 
 	config DEFAULT_VR
-<<<<<<< HEAD
-		bool "VR" if IOSCHED_VR=y	
-=======
-		bool "VR" if IOSCHED_VR=y		  
+		bool "VR" if IOSCHED_VR=y			  
 		  
-
-=======
 	config DEFAULT_ROW
 		bool "ROW" if IOSCHED_ROW=y
 		help
@@ -191,13 +185,11 @@ choice
 		  for each queue is defined according to queue priority.
 		  Most suitable for mobile devices.
 		
->>>>>>> 6b2be98... block: add ROW I/O scheduler
 	config DEFAULT_CFQ
 		bool "CFQ" if IOSCHED_CFQ=y
 
 	config DEFAULT_NOOP
 		bool "No-op"
->>>>>>> 189becd... block: add ROW I/O scheduler
 
 	config DEFAULT_BFQ
 		bool "BFQ" if IOSCHED_BFQ=y
@@ -217,12 +209,9 @@ endchoice
 config DEFAULT_IOSCHED
 	string
 	default "deadline" if DEFAULT_DEADLINE
-<<<<<<< HEAD
-=======
 	default "tripndroid" if DEFAULT_TRIPNDROID
 	default "sioplus" if DEFAULT_SIOPLUS
 	default "row" if DEFAULT_ROW
->>>>>>> 189becd... block: add ROW I/O scheduler
 	default "cfq" if DEFAULT_CFQ
 	default "bfq" if DEFAULT_BFQ
 	default "fiops" if DEFAULT_FIOPS
