@@ -193,7 +193,7 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
 ARCH		= arm64
-CROSS_COMPILE = /home/sick/aarch64-linux-android-4.8/bin/aarch64-linux-android-
+CROSS_COMPILE = /home/sick/aarch64-linux-android-4.9/bin/aarch64-linux-android-
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
@@ -385,6 +385,8 @@ KBUILD_CFLAGS   := -w -Wstrict-prototypes -Wno-trigraphs \
 		   -Wno-format-security \
 		   -fno-delete-null-pointer-checks \
 		   -fdiagnostics-show-option
+                   -march=armv8-a+crc \
+		   -mtune=cortex-a57.cortex-a53
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
@@ -584,11 +586,9 @@ all: vmlinux
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
 else
-KBUILD_CFLAGS	+= -O2 $(call cc-disable-warning,maybe-uninitialized,)
+KBUILD_CFLAGS	+= -O3
 endif
 
-# Tell gcc to never replace conditional load with a non-conditional one
-KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
 
 include $(srctree)/arch/$(SRCARCH)/Makefile
 
