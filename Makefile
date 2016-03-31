@@ -239,11 +239,10 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 	  else if [ -x /bin/bash ]; then echo /bin/bash; \
 	  else echo sh; fi ; fi)
 
-<<<<<<< HEAD
 HOSTCC       = gcc
 HOSTCXX      = g++
 HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
-=======
+
 HOSTCC       = $(CCACHE) gcc
 HOSTCXX      = $(CCACHE) g++
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
@@ -252,7 +251,6 @@ HOSTCXXFLAGS = -O2
 endif
 ifdef CONFIG_CC_OPTIMIZE_DEFAULT
 HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu89
->>>>>>> 8d141ee... Makefile: add optimization levels
 HOSTCXXFLAGS = -O2
 endif
 ifdef CONFIG_CC_OPTIMIZE_MORE
