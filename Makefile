@@ -193,7 +193,7 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
 ARCH		= arm64
-CROSS_COMPILE = /home/sick/gcc-linaro-4.9-2015.02-3-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
+CROSS_COMPILE = /home/sick/aarch64-linux-android-4.8/bin/aarch64-linux-android-
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
@@ -408,17 +408,14 @@ LINUXINCLUDE    := \
 
 KBUILD_CPPFLAGS := -D__KERNEL__
 
-KBUILD_CFLAGS   := -w -Wstrict-prototypes -Wno-trigraphs \
+KBUILD_CFLAGS   :=  -w -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
 		   -fno-delete-null-pointer-checks \
-		   -fdiagnostics-show-option \
-                   -pipe -fno-pic -O2 \
-                   -mcpu=cortex-a57.cortex-a53 \
-                   -march=armv8-a+crc \
-		   -mtune=cortex-a57.cortex-a53
-                   -std=gnu89
+		   -fdiagnostics-show-option -Werror \
+		   -std=gnu89 -Wno-discarded-array-qualifiers -Wno-logical-not-parentheses -Wno-array-bounds -Wno-switch -Wno-unused-variable \
+		   
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
