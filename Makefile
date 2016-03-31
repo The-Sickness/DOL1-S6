@@ -413,7 +413,7 @@ KBUILD_CFLAGS   := -w -Wstrict-prototypes -Wno-trigraphs \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
 		   -fno-delete-null-pointer-checks \
-		   -fdiagnostics-show-option
+		   -fdiagnostics-show-option \
                    -pipe -fno-pic -O2 \
                    -mcpu=cortex-a57.cortex-a53 \
                    -march=armv8-a+crc \
