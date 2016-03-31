@@ -137,11 +137,9 @@ void unix_inflight(struct user_struct *user, struct file *fp)
 		unix_tot_inflight++;
 		spin_unlock(&unix_gc_lock);
 	}
-<<<<<<< HEAD
-=======
+
 	user->unix_inflight++;
 	spin_unlock(&unix_gc_lock);
->>>>>>> 72f6eb8... Linux 3.10.99
 }
 
 void unix_notinflight(struct user_struct *user, struct file *fp)
@@ -156,11 +154,9 @@ void unix_notinflight(struct user_struct *user, struct file *fp)
 		unix_tot_inflight--;
 		spin_unlock(&unix_gc_lock);
 	}
-<<<<<<< HEAD
-=======
+
 	user->unix_inflight--;
 	spin_unlock(&unix_gc_lock);
->>>>>>> 72f6eb8... Linux 3.10.99
 }
 
 static void scan_inflight(struct sock *x, void (*func)(struct unix_sock *),

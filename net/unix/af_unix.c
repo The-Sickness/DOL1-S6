@@ -1513,15 +1513,13 @@ static int unix_attach_fds(struct scm_cookie *scm, struct sk_buff *skb)
 	if (!UNIXCB(skb).fp)
 		return -ENOMEM;
 
-<<<<<<< HEAD
 	if (unix_sock_count) {
 		for (i = scm->fp->count - 1; i >= 0; i--)
 			unix_inflight(scm->fp->fp[i]);
 	}
-=======
+
 	for (i = scm->fp->count - 1; i >= 0; i--)
 		unix_inflight(scm->fp->user, scm->fp->fp[i]);
->>>>>>> 72f6eb8... Linux 3.10.99
 	return max_level;
 }
 
