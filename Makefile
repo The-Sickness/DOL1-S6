@@ -414,8 +414,11 @@ KBUILD_CFLAGS   := -w -Wstrict-prototypes -Wno-trigraphs \
 		   -Wno-format-security \
 		   -fno-delete-null-pointer-checks \
 		   -fdiagnostics-show-option
+                   -pipe -fno-pic -O2 \
+                   -mcpu=cortex-a57.cortex-a53 \
                    -march=armv8-a+crc \
 		   -mtune=cortex-a57.cortex-a53
+                   -std=gnu89
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
