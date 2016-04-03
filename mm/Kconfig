@@ -461,8 +461,6 @@ config CLEANCACHE
 
 	  If unsure, say Y to enable cleancache
 
-<<<<<<< HEAD
-=======
 config ADAPTIVE_DIRTY_BACKGROUND_RATIO
 	bool "Adaptive dirty_background_ratio"
 	depends on POWERSUSPEND
@@ -495,7 +493,6 @@ config DYNAMIC_PAGE_WRITEBACK
 
 	  If unsure, say N to disable this feature
 
->>>>>>> 089737f... mm: Adaptive Dirty Background Ratio & Dirty Ratio for suspend/resume
 config FRONTSWAP
 	bool "Enable frontswap to cache swap pages if tmem is present"
 	depends on SWAP
