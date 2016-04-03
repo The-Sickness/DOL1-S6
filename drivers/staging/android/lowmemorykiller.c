@@ -151,8 +151,6 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		if (tsk->flags & PF_KTHREAD)
 			continue;
 
-<<<<<<< HEAD
-=======
 		/* if task no longer has any memory ignore it */
 		if (test_task_flag(tsk, TIF_MM_RELEASED))
 			continue;
@@ -173,7 +171,6 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 			}
 		}
 
->>>>>>> 48bbc88... lowmemorykiller: Check tgid with rcu lock held
 		p = find_lock_task_mm(tsk);
 		if (!p)
 			continue;
