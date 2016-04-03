@@ -39,7 +39,7 @@ echo "Done"
 echo -n "Set build variables................................"
 export ARCH=arm64
 export SUBARCH=arm64
-#export ccache=ccache
+export ccache=ccache
 export USE_SEC_FIPS_MODE=true
 export KCONFIG_NOTIMESTAMP=true
 echo "Done"
