@@ -1636,15 +1636,12 @@ static ssize_t store_cluster1_volt_table(struct kobject *kobj, struct attribute 
 	return store_volt_table(kobj, attr, buf, count, CL_ONE);
 }
 
-<<<<<<< HEAD
-=======
 static ssize_t show_cluster1_volt_table_stock(struct kobject *kobj,
 				struct attribute *attr, char *buf)
 {
 	return show_volt_table_stock(kobj, attr, buf, CL_ONE);
 }
 
->>>>>>> 4d99649... cpufreq: Add voltage control, thanks to AndreiLux for pointing me to the right files
 static ssize_t show_cluster0_freq_table(struct kobject *kobj,
 			     struct attribute *attr, char *buf)
 {
@@ -1687,49 +1684,34 @@ static ssize_t store_cluster0_volt_table(struct kobject *kobj, struct attribute 
 	return store_volt_table(kobj, attr, buf, count, CL_ZERO);
 }
 
-<<<<<<< HEAD
-=======
 static ssize_t show_cluster0_volt_table_stock(struct kobject *kobj,
 				struct attribute *attr, char *buf)
 {
 	return show_volt_table_stock(kobj, attr, buf, CL_ZERO);
 }
 
->>>>>>> 4d99649... cpufreq: Add voltage control, thanks to AndreiLux for pointing me to the right files
 define_one_global_ro(cluster1_freq_table);
 define_one_global_rw(cluster1_min_freq);
 define_one_global_rw(cluster1_max_freq);
 define_one_global_rw(cluster1_volt_table);
-<<<<<<< HEAD
-=======
 define_one_global_ro(cluster1_volt_table_stock);
->>>>>>> 4d99649... cpufreq: Add voltage control, thanks to AndreiLux for pointing me to the right files
 define_one_global_ro(cluster0_freq_table);
 define_one_global_rw(cluster0_min_freq);
 define_one_global_rw(cluster0_max_freq);
 define_one_global_rw(cluster0_volt_table);
-<<<<<<< HEAD
-=======
 define_one_global_ro(cluster0_volt_table_stock);
->>>>>>> 4d99649... cpufreq: Add voltage control, thanks to AndreiLux for pointing me to the right files
 
 static struct attribute *mp_attributes[] = {
 	&cluster1_freq_table.attr,
 	&cluster1_min_freq.attr,
 	&cluster1_max_freq.attr,
 	&cluster1_volt_table.attr,
-<<<<<<< HEAD
-=======
 	&cluster1_volt_table_stock.attr,
->>>>>>> 4d99649... cpufreq: Add voltage control, thanks to AndreiLux for pointing me to the right files
 	&cluster0_freq_table.attr,
 	&cluster0_min_freq.attr,
 	&cluster0_max_freq.attr,
 	&cluster0_volt_table.attr,
-<<<<<<< HEAD
-=======
 	&cluster0_volt_table_stock.attr,
->>>>>>> 4d99649... cpufreq: Add voltage control, thanks to AndreiLux for pointing me to the right files
 	NULL
 };
 
