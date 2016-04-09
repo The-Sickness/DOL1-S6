@@ -26,7 +26,6 @@
 #include <linux/reboot.h>
 #include <linux/delay.h>
 #include <linux/cpu.h>
-#include <linux/ipa.h>
 #include <linux/pm_qos.h>
 #include <linux/kobject.h>
 #include <linux/sysfs.h>
@@ -61,37 +60,6 @@
 #else
 #define POWER_COEFF_15P		48 /* percore param */
 #define POWER_COEFF_7P		9 /* percore  param */
-#endif
-
-#ifdef CONFIG_SOC_EXYNOS7420
-#define CL0_MAX_VOLT		1175000
-#define CL1_MAX_VOLT		1125000
-#define CL0_MIN_VOLT		500000
-#define CL1_MIN_VOLT		500000
-#define CL_MAX_VOLT(cl)		(cl == CL_ZERO ? CL0_MAX_VOLT : CL1_MAX_VOLT)
-#define CL_MIN_VOLT(cl)		(cl == CL_ZERO ? CL0_MIN_VOLT : CL1_MIN_VOLT)
-#define CL_VOLT_STEP		6250
-#else
-#error "Please define core voltage ranges for current SoC."
-#endif
-
-#ifdef CONFIG_SOC_EXYNOS7420
-	#ifdef EXYNOS7420_CPU_UNDERCLOCK
-		#define CL0_MIN_FREQ		200000
-		#define CL1_MIN_FREQ		200000
-	#else
-		#define CL0_MIN_FREQ		400000
-		#define CL1_MIN_FREQ		800000
-	#endif
-	#ifdef EXYNOS7420_CPU_OVERCLOCK
-		#define CL0_MAX_FREQ		1600000
-		#define CL1_MAX_FREQ		2500000
-	#else
-		#define CL0_MAX_FREQ		1500000
-		#define CL1_MAX_FREQ		2100000
-	#endif
-#else
-#error "Please define core frequency ranges for current SoC."
 #endif
 
 #define VOLT_RANGE_STEP		25000
@@ -554,7 +522,6 @@ static int exynos_set_voltage(unsigned int cur_index,
 		ret = regulator_set_voltage(regulator, volt, volt + VOLT_RANGE_STEP);
 		if (ret)
 			goto out;
-
 	}
 
 	if (exynos_info[cluster]->abb_table)
@@ -566,7 +533,6 @@ static int exynos_set_voltage(unsigned int cur_index,
 			goto out;
 	}
 
-	exynos_info[cluster]->cur_volt = volt;
 out:
 	return ret;
 }
@@ -1067,8 +1033,6 @@ static int exynos_cpufreq_pm_notifier(struct notifier_block *notifier,
 				if (regulator_set_voltage(exynos_info[cl]->regulator, volt, volt + VOLT_RANGE_STEP))
 					goto err;
 
-			exynos_info[cl]->cur_volt = volt;
-
 			if (exynos_info[cl]->set_ema)
 				exynos_info[cl]->set_ema(volt);
 #ifdef CONFIG_EXYNOS_CL_DVFS_CPU
@@ -1105,7 +1069,6 @@ err:
 
 static struct notifier_block exynos_cpufreq_nb = {
 	.notifier_call = exynos_cpufreq_pm_notifier,
-	.priority = -1,
 };
 
 #ifdef CONFIG_EXYNOS_THERMAL
@@ -1115,10 +1078,7 @@ static int exynos_cpufreq_tmu_notifier(struct notifier_block *notifier,
 	int volt, cl;
 	int *on = v;
 	int ret = NOTIFY_OK;
-#ifdef CONFIG_EXYNOS_CL_DVFS_CPU
-	int cl_index = 0;
-#endif
-	int cold_offset = 0;
+	int cl_index;
 
 	if (event != TMU_COLD)
 		return NOTIFY_OK;
@@ -1131,9 +1091,8 @@ static int exynos_cpufreq_tmu_notifier(struct notifier_block *notifier,
 			volt_offset = COLD_VOLT_OFFSET;
 
 		for (cl = 0; cl < CL_END; cl++) {
-			volt = exynos_info[cl]->cur_volt;
+			volt = get_freq_volt(cl, freqs[cl]->old, &cl_index);
 #ifdef CONFIG_EXYNOS_CL_DVFS_CPU
-			get_freq_volt(cl, freqs[cl]->old, &cl_index);
 			exynos7420_cl_dvfs_stop(CLUSTER_ID(cl), cl_index);
 #endif
 			volt = get_limit_voltage(volt);
@@ -1143,22 +1102,18 @@ static int exynos_cpufreq_tmu_notifier(struct notifier_block *notifier,
 				goto out;
 			}
 
-			exynos_info[cl]->cur_volt = volt;
-
 			if (exynos_info[cl]->set_ema)
 				exynos_info[cl]->set_ema(volt);
 		}
 	} else {
 		if (!volt_offset)
 			goto out;
-		else {
-			cold_offset = volt_offset;
+		else
 			volt_offset = 0;
-		}
+
 		for (cl = 0; cl < CL_END; cl++) {
-			volt = get_limit_voltage(exynos_info[cl]->cur_volt - cold_offset);
+			volt = get_limit_voltage(get_freq_volt(cl, freqs[cl]->old, &cl_index));
 #ifdef CONFIG_EXYNOS_CL_DVFS_CPU
-			get_freq_volt(cl, freqs[cl]->old, &cl_index);
 			exynos7420_cl_dvfs_stop(CLUSTER_ID(cl), cl_index);
 #endif
 			if (exynos_info[cl]->set_ema)
@@ -1169,9 +1124,6 @@ static int exynos_cpufreq_tmu_notifier(struct notifier_block *notifier,
 				ret = NOTIFY_BAD;
 				goto out;
 			}
-
-			exynos_info[cl]->cur_volt = volt;
-
 #ifdef CONFIG_EXYNOS_CL_DVFS_CPU
 			exynos7420_cl_dvfs_start(CLUSTER_ID(cl));
 #endif
@@ -1192,7 +1144,6 @@ static struct notifier_block exynos_tmu_nb = {
 static int exynos_cpufreq_cpu_init(struct cpufreq_policy *policy)
 {
 	unsigned int cur = get_cur_cluster(policy->cpu);
-	int ret;
 
 	pr_debug("%s: cpu[%d]\n", __func__, policy->cpu);
 
@@ -1210,15 +1161,8 @@ static int exynos_cpufreq_cpu_init(struct cpufreq_policy *policy)
 		cpumask_copy(policy->cpus, &cluster_cpus[CL_ZERO]);
 		cpumask_copy(policy->related_cpus, &cluster_cpus[CL_ZERO]);
 	}
-	
-	ret = cpufreq_frequency_table_cpuinfo(policy, exynos_info[cur]->freq_table);
-	
-	if (!ret) {
-		policy->min = cur == CL_ONE ? CL1_MIN_FREQ : CL0_MIN_FREQ;
-		policy->max = cur == CL_ONE ? CL1_MAX_FREQ : CL0_MAX_FREQ;
-	}
 
-	return ret;
+	return cpufreq_frequency_table_cpuinfo(policy, exynos_info[cur]->freq_table);
 }
 
 static struct cpufreq_driver exynos_driver = {
@@ -1503,97 +1447,6 @@ inline ssize_t store_core_freq(const char *buf, size_t count,
 	return count;
 }
 
-static size_t get_freq_table_size(struct cpufreq_frequency_table *freq_table)
-{
-	size_t tbl_sz = 0;
-	int i;
-
-	for (i = 0; freq_table[i].frequency != CPUFREQ_TABLE_END; i++)
-		tbl_sz++;
-
-	return tbl_sz;
-}
-
-static ssize_t show_volt_table(struct kobject *kobj,
-				struct attribute *attr, char *buf, int cluster)
-{
-	int i, count = 0;
-	size_t tbl_sz = 0, pr_len;
-	struct cpufreq_frequency_table *freq_table = exynos_info[cluster]->freq_table;
-
-	for (i = 0; freq_table[i].frequency != CPUFREQ_TABLE_END; i++)
-		tbl_sz++;
-
-	if (tbl_sz == 0)
-		return -EINVAL;
-
-	pr_len = (size_t)((PAGE_SIZE - 2) / tbl_sz);
-
-	for (i = 0; freq_table[i].frequency != CPUFREQ_TABLE_END; i++) {
-		if (freq_table[i].frequency != CPUFREQ_ENTRY_INVALID)
-			count += snprintf(&buf[count], pr_len, "%d %d\n",
-					freq_table[i].frequency,
-					exynos_info[cluster]->volt_table[i]);
-	}
-
-	return count;
-}
-
-static ssize_t store_volt_table(struct kobject *kobj, struct attribute *attr,
-					const char *buf, size_t count, int cluster)
-{
-	int i, tokens, rest, target, invalid_offset;
-	struct cpufreq_frequency_table *freq_table = exynos_info[cluster]->freq_table;
-	size_t tbl_sz = get_freq_table_size(freq_table);
-	int t[tbl_sz];
-
-	invalid_offset = 0;
-
-	if ((tokens = read_into((int*)&t, tbl_sz, buf, count)) < 0)
-		return -EINVAL;
-
-	target = -1;
-	if (tokens == 2) {
-		for (i = 0; (freq_table[i].frequency != CPUFREQ_TABLE_END); i++) {
-			unsigned int freq = freq_table[i].frequency;
-			if (freq == CPUFREQ_ENTRY_INVALID)
-				continue;
-
-			if (t[0] == freq) {
-				target = i;
-				break;
-			}
-		}
-	}
-
-	mutex_lock(&cpufreq_lock);
-
-	if (tokens == 2 && target > 0) {
-		if ((rest = t[1] % CL_VOLT_STEP) != 0)
-			t[1] += CL_VOLT_STEP - rest;
-		
-		sanitize_min_max(t[1], CL_MIN_VOLT(cluster), CL_MAX_VOLT(cluster));
-		exynos_info[cluster]->volt_table[target] = t[1];
-	} else {
-		for (i = 0; i < tokens; i++) {
-			while (freq_table[i + invalid_offset].frequency == CPUFREQ_ENTRY_INVALID)
-				++invalid_offset;
-
-			if ((rest = t[i] % CL_VOLT_STEP) != 0)
-				t[i] += CL_VOLT_STEP - rest;
-			
-			sanitize_min_max(t[i], CL_MIN_VOLT(cluster), CL_MAX_VOLT(cluster));
-			exynos_info[cluster]->volt_table[i + invalid_offset] = t[i];
-		}
-	}
-
-	ipa_update();
-
-	mutex_unlock(&cpufreq_lock);
-
-	return count;
-}
-
 static ssize_t show_cluster1_freq_table(struct kobject *kobj,
 				struct attribute *attr, char *buf)
 {
@@ -1767,8 +1620,6 @@ static int exynos_cpufreq_reboot_notifier_call(struct notifier_block *this,
 			if (regulator_set_voltage(exynos_info[cl]->regulator, volt, volt + VOLT_RANGE_STEP))
 				goto err;
 
-		exynos_info[cl]->cur_volt = volt;
-
 		if (exynos_info[cl]->abb_table) {
 			abb_freq = max(bootfreq, freqs[cl]->old);
 			freq_table = exynos_info[cl]->freq_table;
@@ -1785,8 +1636,6 @@ static int exynos_cpufreq_reboot_notifier_call(struct notifier_block *this,
 		if (set_abb_first_than_volt)
 			if (regulator_set_voltage(exynos_info[cl]->regulator, volt, volt + VOLT_RANGE_STEP))
 				goto err;
-
-		exynos_info[cl]->cur_volt = volt;
 
 		if (exynos_info[cl]->set_ema)
 			exynos_info[cl]->set_ema(volt);
@@ -2093,8 +1942,6 @@ static int __init exynos_cpufreq_init(void)
 
 		set_boot_freq(cluster);
 		set_resume_freq(cluster);
-
-		exynos_info[cluster]->cur_volt = regulator_get_voltage(exynos_info[cluster]->regulator);
 
 		/* set initial old frequency */
 		freqs[cluster]->old = exynos_getspeed_cluster(cluster);
